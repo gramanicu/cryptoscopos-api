@@ -15,7 +15,7 @@ on:
         branches: [dev]
 
 jobs:
-    Test Formatting:
+    code_formatting:
         runs-on: ubuntu-latest
 
         steps:
@@ -30,7 +30,7 @@ jobs:
             - name: Verify formatting
               run: deno fmt --check --config ./deno.json
 
-    Test Linting:
+    linting:
         runs-on: ubuntu-latest
 
         steps:
@@ -45,7 +45,7 @@ jobs:
             - name: Run linter
               run: deno lint
 
-    Unit testing:
+    unit_tests:
         runs-on: ubuntu-latest
 
         steps:
