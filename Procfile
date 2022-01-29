@@ -1,1 +1,1 @@
-web: deno run --alow-read --allow-net=:${PORT} index.ts --port=${PORT}
+web: deno run --allow-read --allow-net=:${PORT} index.ts --port=${PORT}
