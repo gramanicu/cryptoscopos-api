@@ -3,4 +3,4 @@ import { apiRouterV1 } from './v1/index.routes.ts';
 
 export const router = new Router()
     .redirect('/', '/v1')
-    .use('/v1', apiRouterV1.routes(), apiRouterV1.allowedMethods());
+    .use(apiRouterV1.routes(), apiRouterV1.allowedMethods());
