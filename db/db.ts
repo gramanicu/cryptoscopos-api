@@ -5,6 +5,9 @@ import {
 } from 'https://deno.land/x/postgres/mod.ts';
 import { MONGO_VARS, POSTGRES_VARS } from '../config.ts';
 
+console.log(MONGO_VARS);
+console.log(POSTGRES_VARS);
+
 // PostgreSQL Database
 const postgresPool = new PostgresPool(
     {
