@@ -1,7 +1,8 @@
-import { router } from '../router.ts';
+import { Router } from 'https://deno.land/x/oak/mod.ts';
 import status from '../../controllers/status.ts';
 
-export const loadV1Routes = () => {
-    router.redirect('/', '/status');
-    router.get('/status', status);
-};
+const apiRouterV1 = new Router()
+    .redirect('/', '/status')
+    .get('/status', status);
+
+export { apiRouterV1 };
