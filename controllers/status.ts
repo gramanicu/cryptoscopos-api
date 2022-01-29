@@ -1,4 +1,4 @@
-import { getPostgresClient, mongoDB, postgresPool } from '../db/db.ts';
+import { getPostgresClient, mongoDB } from '../db/db.ts';
 
 const status = ({ response }: { response: any }) => {
     response.body = { msg: 'OK' };
