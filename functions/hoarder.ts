@@ -1,8 +1,9 @@
 import { Application, Router } from 'https://deno.land/x/oak/mod.ts';
 import { cron } from 'https://deno.land/x/deno_cron/cron.ts';
-import { mongoDB } from '../db/db.ts';
+import { mongoDB } from '../db/mongo.ts';
 import { PORT } from '../config.ts';
 import { htmlPage } from './hoarder.web.ts';
+import { checkMongoVars } from '../config.ts';
 
 const cg_host = 'api.coingecko.com';
 const cg_api_path = '/api/v3';
@@ -15,6 +16,13 @@ const cg_options = {
 };
 
 const cron_every_hour = '0 * * * *';
+
+if (!checkMongoVars()) {
+    console.error(
+        'Not all the environment variables are defined. Check the example',
+    );
+    Deno.exit(1);
+}
 
 /**
  * Check if the data source is available

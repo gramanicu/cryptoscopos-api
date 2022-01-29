@@ -1,4 +1,6 @@
-import { getPostgresClient, mongoDB } from '../db/db.ts';
+import { getPostgresClient } from './../db/postgres.ts';
+import { mongoDB } from '../db/mongo.ts';
+import { PoolClient } from 'https://deno.land/x/postgres/mod.ts';
 
 const status = ({ response }: { response: any }) => {
     response.body = { msg: 'OK' };
@@ -6,7 +8,7 @@ const status = ({ response }: { response: any }) => {
 
     console.log(mongoDB.name);
 
-    getPostgresClient().then((client) => {}).catch((err) => {
+    getPostgresClient().then((client: PoolClient) => {}).catch((err) => {
         console.log(err);
     });
 };
