@@ -10,6 +10,12 @@ const cg_options = {
     },
 };
 
+const cron_every_hour = '0 * * * *';
+
+/**
+ * Check if the data source is available
+ * @returns If the CoinGecko API is online
+ */
 const ping_source = async () => {
     const res = await fetch(
         `https://${cg_host}${cg_api_path}/ping`,
@@ -23,14 +29,19 @@ const ping_source = async () => {
     }
 };
 
-cron('* * * * *', () => {
-    ping_source();
-    console.log('One minute passed');
-});
+/**
+ * Retrieves and stores data from CoinGecko API
+ * @returns If the operation was successful
+ */
+const hoard_data = async () => {
+    const api_online = await ping_source();
 
-const each_second = () => {
-    ping_source();
-    console.log('15 seconds passed');
+    if (!api_online) return false;
+
+    // Call api's and update db
+
+    return true;
 };
 
-setInterval(each_second, 15000);
+// Run the cronjob
+cron(cron_every_hour, hoard_data);
