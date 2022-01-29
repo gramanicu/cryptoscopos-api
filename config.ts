@@ -1,8 +1,53 @@
 import { config } from 'https://deno.land/x/dotenv/mod.ts';
 
 // Check for DenoDeploy
-if (typeof Deno.readFileSync == 'function') {
+if (
+    typeof Deno.readFileSync == 'function' &&
+    (await Deno.permissions.query({ name: 'read' })).state == 'granted'
+) {
     config({ export: true });
 }
 
-export const PORT: number = parseInt(Deno.env.get('PORT') || '4000');
+// Application config vars
+export const PORT = parseInt(Deno.env.get('PORT') || '4000');
+
+// Mongo config vars
+export const MONGO_VARS = {
+    database: Deno.env.get('MONGO_DATABASE') || 'coinstore',
+    host: Deno.env.get('MONGO_HOST'),
+    port: parseInt(Deno.env.get('MONGO_PORT') || '27017'),
+    username: Deno.env.get('MONGO_USERNAME'),
+    password: Deno.env.get('MONGO_PASSWORD'),
+};
+
+/**
+ * Check if all required mongo variables are defined
+ * @returns If the mongo variables are defined
+ */
+export const checkMongoVars = () => {
+    return MONGO_VARS.database != undefined &&
+        MONGO_VARS.host != undefined &&
+        MONGO_VARS.username != undefined &&
+        MONGO_VARS.password != undefined;
+};
+
+// Postgres config vars
+export const POSTGRES_VARS = {
+    database: Deno.env.get('POSTGRES_DATABASE') || 'postgres',
+    host: Deno.env.get('POSTGRES_HOST'),
+    port: parseInt(Deno.env.get('POSTGRES_PORT') || '27017'),
+    username: Deno.env.get('POSTGRES_USERNAME'),
+    password: Deno.env.get('POSTGRES_PASSWORD'),
+    pool_size: parseInt(Deno.env.get('POSTGRES_POOLSIZE') || '20'),
+};
+
+/**
+ * Check if all required postgres variables are defined
+ * @returns If the postgres variables are defined
+ */
+export const checkPostgresVars = () => {
+    return POSTGRES_VARS.database != undefined &&
+        POSTGRES_VARS.host != undefined &&
+        POSTGRES_VARS.username != undefined &&
+        POSTGRES_VARS.password != undefined;
+};
