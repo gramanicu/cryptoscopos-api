@@ -27,11 +27,7 @@ export const checkMongoVars = () => {
 
 // Postgres config vars
 export const POSTGRES_VARS = {
-    database: Deno.env.get('POSTGRES_DATABASE') || 'postgres',
-    host: Deno.env.get('POSTGRES_HOST'),
-    port: parseInt(Deno.env.get('POSTGRES_PORT') || '27017'),
-    username: Deno.env.get('POSTGRES_USERNAME'),
-    password: Deno.env.get('POSTGRES_PASSWORD'),
+    uri: Deno.env.get('POSTGRES_URI'),
     pool_size: parseInt(Deno.env.get('POSTGRES_POOLSIZE') || '20'),
 };
 
@@ -40,8 +36,5 @@ export const POSTGRES_VARS = {
  * @returns If the postgres variables are defined
  */
 export const checkPostgresVars = () => {
-    return POSTGRES_VARS.database != undefined &&
-        POSTGRES_VARS.host != undefined &&
-        POSTGRES_VARS.username != undefined &&
-        POSTGRES_VARS.password != undefined;
+    return POSTGRES_VARS.uri != undefined;
 };

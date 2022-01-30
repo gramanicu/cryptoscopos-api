@@ -3,18 +3,7 @@ import { POSTGRES_VARS } from '../config.ts';
 
 // PostgreSQL Database
 export const postgresPool = new Pool(
-    {
-        database: POSTGRES_VARS.database,
-        hostname: POSTGRES_VARS.host,
-        host_type: 'tcp',
-        password: POSTGRES_VARS.password,
-        port: POSTGRES_VARS.port,
-        user: POSTGRES_VARS.username,
-        tls: {
-            enabled: false,
-            enforce: false,
-        },
-    },
+    POSTGRES_VARS.uri,
     POSTGRES_VARS.pool_size,
     true,
 );

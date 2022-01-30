@@ -4,7 +4,8 @@ The backend component of the Cryptoscopos Project.
 
 ## Vars
 
-- Mongo URI - mongodb+srv://cryptoscout:<password>@<cluster_url>/?authMechanism=SCRAM-SHA-1
+- Mongo URI - mongodb+srv://cryptoscout:[password]@[cluster_url]/?authMechanism=SCRAM-SHA-1
+
 
 ## References
 
