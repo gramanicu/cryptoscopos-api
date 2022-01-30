@@ -13,11 +13,8 @@ export const PORT = parseInt(Deno.env.get('PORT') || '4000');
 
 // Mongo config vars
 export const MONGO_VARS = {
+    uri: Deno.env.get('MONGO_URI'),
     database: Deno.env.get('MONGO_DATABASE') || 'coinstore',
-    host: Deno.env.get('MONGO_HOST'),
-    port: parseInt(Deno.env.get('MONGO_PORT') || '27017'),
-    username: Deno.env.get('MONGO_USERNAME'),
-    password: Deno.env.get('MONGO_PASSWORD'),
 };
 
 /**
@@ -25,10 +22,7 @@ export const MONGO_VARS = {
  * @returns If the mongo variables are defined
  */
 export const checkMongoVars = () => {
-    return MONGO_VARS.database != undefined &&
-        MONGO_VARS.host != undefined &&
-        MONGO_VARS.username != undefined &&
-        MONGO_VARS.password != undefined;
+    return MONGO_VARS.uri != undefined;
 };
 
 // Postgres config vars

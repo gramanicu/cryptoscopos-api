@@ -5,23 +5,7 @@ import { MONGO_VARS } from '../config.ts';
 const mongoClient = new MongoClient();
 
 try {
-    await mongoClient.connect({
-        // Force the assign, as we know they are defined (and strings)
-        db: MONGO_VARS.database!,
-        tls: true,
-        servers: [
-            {
-                host: MONGO_VARS.host!,
-                port: 27017,
-            },
-        ],
-        credential: {
-            username: MONGO_VARS.username!,
-            password: MONGO_VARS.password!,
-            db: MONGO_VARS.database!,
-            mechanism: 'SCRAM-SHA-1',
-        },
-    });
+    await mongoClient.connect(MONGO_VARS.uri!);
 } catch (error) {
     console.error(error);
 }
