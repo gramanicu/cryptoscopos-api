@@ -1,0 +1,185 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Someone who uses the application
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type UserTypes @default(BASE)
+
+  // Based on type, there may be AUTH0_DATA, PRIVATE_DATA, DEV_DATA, etc.. Some users may have multiple connections, with specific data.
+
+  accounts       Account[]
+  alerts         Alert[]
+  tickets        Ticket[]
+  ticketMessages TicketMessage[]
+  @@map(name: "users")
+}
+
+/// All the user types inside the application
+enum UserTypes {
+  ADMIN
+  STAFF
+  DEVELOPER
+  BASE
+  PRIVATE
+}
+
+/// A crypto coin that is tracked by the system
+model Coin {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coingeckoId String
+  information CoinInformation?
+
+  accounts Account[]
+  data     CoinData[]
+  @@map(name: "coins")
+}
+
+model CoinInformation {
+  id          String  @id @default(cuid())
+  coin        Coin    @relation(fields: [coinId], references: [id])
+  symbol      String
+  name        String
+  description String?
+  homepage    String?
+  image       String?
+  extra       Json? /// Any data that is needed and isn't one of the other fields in this table will be put inside this JSON Object
+
+  coinId String @unique
+  @@map(name: "coin_informations")
+}
+
+/// An account owned by a DEVELOPER, PRIVATE or BASE user, that "holds" a specific coin
+model Account {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner       User    @relation(fields: [userId], references: [id])
+  currency    Coin    @relation(fields: [coinId], references: [id])
+  name        String
+  description String?
+  image       String?
+
+  userId       String
+  coinId       String
+  transactions Transaction[]
+  @@map(name: "accounts")
+}
+
+/// A transaction made inside an account. An accounts always starts with 0 crypto in it, and the current state of the account is the sum of all the transactions of that account.
+model Transaction {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  account Account @relation(fields: [accountId], references: [id])
+  amount  Float /// The cryptocurrency amount
+  value   Float /// The value in $USD
+  comment String? /// Any specific information related to the transaction
+
+  accountId String
+  @@map(name: "transactions")
+}
+
+/// A data point for any coin, at a specific moment in time
+model CoinData {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coin      Coin     @relation(fields: [coinId], references: [id])
+  timestamp DateTime /// The timestamp of the datapoint (it isn't always the same as the createdAt field)
+  value     Float /// The value in $USD of the specific cryptocurrency
+
+  coinId String
+  @@map(name: "coin_data")
+}
+
+/// An alert with a custom trigger, related to an account or coin
+model Alert {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// The user who created the alert. This is important, as only the owner of an account can set alerts related to that account.
+  createdBy User @relation(fields: [userId], references: [id])
+
+  trigger     String /// The condition that will trigger the alert
+  name        String
+  description String?
+
+  userId        String
+  notifications Notification[]
+  @@map(name: "alerts")
+}
+
+/// Notification that will be sent when an Alert is triggered. As any Alert has an user associated with it, the: email, discord account, etc.. to be notified can be obtained from there
+model Notification {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type        NotificationTypes @default(EMAIL)
+  triggeredBy Alert             @relation(fields: [alertId], references: [id])
+  message     String
+
+  alertId String
+  @@map(name: "notifications")
+}
+
+enum NotificationTypes {
+  EMAIL
+  DISCORD
+}
+
+/// A ticket created by an user to report a problem/bug or ask a question to a STAFF member
+model Ticket {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subject   String
+  type      TicketTypes
+  createdBy User        @relation(fields: [userId], references: [id])
+
+  messages TicketMessage[]
+  userId   String
+  @@map(name: "tickets")
+}
+
+enum TicketTypes {
+  BUG_REPORT
+  QUESTION
+}
+
+/// A message sent during a ticket conversation
+model TicketMessage {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  part_of   Ticket @relation(fields: [ticketId], references: [id])
+  writtenBy User   @relation(fields: [userId], references: [id])
+  content   String
+
+  ticketId           String
+  ticketSubscriberId String
+  userId             String
+  @@map(name: "ticket_messages")
+}
