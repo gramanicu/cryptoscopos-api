@@ -42,9 +42,9 @@ model Coin {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  coingeckoId String
-  symbol      String
-  name        String
+  coingeckoId String           @unique
+  symbol      String           @unique
+  name        String           @unique
   information CoinInformation?
 
   accounts Account[]
@@ -65,6 +65,21 @@ model CoinInformation {
 
   coinId String @unique
   @@map(name: "coin_informations")
+}
+
+/// A data point for any coin, at a specific moment in time
+model CoinData {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coin      Coin     @relation(fields: [coinId], references: [id])
+  timestamp DateTime /// The timestamp of the datapoint (it isn't always the same as the createdAt field)
+  value     Float /// The value in $USD of the specific cryptocurrency
+
+  coinId String
+  @@unique([coinId, timestamp], name: "dataIdentify")
+  @@map(name: "coin_data")
 }
 
 /// An account owned by a DEVELOPER, PRIVATE or BASE user, that "holds" a specific coin
@@ -98,20 +113,6 @@ model Transaction {
 
   accountId String
   @@map(name: "transactions")
-}
-
-/// A data point for any coin, at a specific moment in time
-model CoinData {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  coin      Coin     @relation(fields: [coinId], references: [id])
-  timestamp DateTime /// The timestamp of the datapoint (it isn't always the same as the createdAt field)
-  value     Float /// The value in $USD of the specific cryptocurrency
-
-  coinId String
-  @@map(name: "coin_data")
 }
 
 /// An alert with a custom trigger, related to an account or coin

@@ -14,8 +14,8 @@ const callGecko = async (route: string, method: Method, data?: JSON): Promise<st
         return null;
     }
 
-    return JSON.stringify(res.data)
-}; 
+    return JSON.stringify(res.data);
+};
 
 /**
  * Search for a specific coin. The results are ordered based on the market cap
@@ -26,20 +26,20 @@ const callGecko = async (route: string, method: Method, data?: JSON): Promise<st
 const search = async (search_term: string, limit = 5): Promise<Coin[]> => {
     const url = `/search?query=${search_term}`;
     const coins: Coin[] = [];
-    const res = await callGecko(url, "GET");
+    const res = await callGecko(url, 'GET');
 
-    if(res) {
-        const coinsJSON = JSON.parse(res)["coins"];
+    if (res) {
+        const coinsJSON = JSON.parse(res)['coins'];
 
-        [...coinsJSON].slice(0, limit).forEach((coin) => {
+        [...coinsJSON].slice(0, limit).forEach(coin => {
             const newCoin: Coin = <Coin>{};
             newCoin.coingeckoId = coin.id;
             newCoin.name = coin.name;
             newCoin.symbol = coin.symbol;
             coins.push(newCoin);
-        })
+        });
     }
-    
+
     return coins;
 };
 
@@ -52,10 +52,9 @@ const get_info = async (gecko_id: string): Promise<[Coin, CoinInformation]> => {
     const url = `/coins/${gecko_id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false`;
     const coin = <Coin>{};
     const coin_info = <CoinInformation>{};
-    const res = await callGecko(url, "GET");
+    const res = await callGecko(url, 'GET');
 
-    
-    if(res) {
+    if (res) {
         const infoJSON = JSON.parse(res);
         coin.coingeckoId = infoJSON.id;
         coin.symbol = infoJSON.symbol;
@@ -67,44 +66,44 @@ const get_info = async (gecko_id: string): Promise<[Coin, CoinInformation]> => {
     }
 
     return [coin, coin_info];
-}
+};
 
 /**
  * Get data for the specified coins (their values)
  * @param gecko_ids The id's of the coin for which data should be retrieved
  * @returns The coin values at the time the request was made
  */
-const get_data = async(gecko_ids: string[]): Promise<{geckoId: string, value: number}[]> => {
+const get_data = async (gecko_ids: string[]): Promise<{ geckoId: string; value: number }[]> => {
     const url = `/simple/price?ids=${gecko_ids.join(',')}&vs_currencies=usd`;
-    const data: {geckoId: string, value: number}[] = [];
-    const res = await callGecko(url, "GET");
+    const data: { geckoId: string; value: number }[] = [];
+    const res = await callGecko(url, 'GET');
     console.log(url);
 
-    if(res) {
+    if (res) {
         const dataJSON = JSON.parse(res);
-        Object.keys(dataJSON).forEach((key) => {
-            const newData = <{geckoId: string, value: number}>{};
+        Object.keys(dataJSON).forEach(key => {
+            const newData = <{ geckoId: string; value: number }>{};
             newData.geckoId = key;
-            newData.value = dataJSON[key]["usd"];
+            newData.value = dataJSON[key]['usd'];
             data.push(newData);
         });
     }
-    
-    return data;
-}
 
-const is_online = async(): Promise<boolean> => {
+    return data;
+};
+
+const is_online = async (): Promise<boolean> => {
     const url = `/ping`;
-    const res = await callGecko(url, "GET");
+    const res = await callGecko(url, 'GET');
 
     return res ? true : false;
-}
+};
 
 const GeckoService = {
     is_online,
     search,
     get_info,
-    get_data
+    get_data,
 };
 
 export default GeckoService;
