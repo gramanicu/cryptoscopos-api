@@ -3,6 +3,10 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import router from './routes';
+import updateTask from './jobs/update_data';
+
+// TODO - should be run separately
+updateTask.start();
 
 dotenv.config();
 
