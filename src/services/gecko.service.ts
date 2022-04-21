@@ -77,7 +77,6 @@ const get_data = async (gecko_ids: string[]): Promise<{ geckoId: string; value: 
     const url = `/simple/price?ids=${gecko_ids.join(',')}&vs_currencies=usd`;
     const data: { geckoId: string; value: number }[] = [];
     const res = await callGecko(url, 'GET');
-    console.log(url);
 
     if (res) {
         const dataJSON = JSON.parse(res);
@@ -99,11 +98,38 @@ const is_online = async (): Promise<boolean> => {
     return res ? true : false;
 };
 
+/**
+ * Get the top cryptocurrencies by market cap (first 250 max)
+ * @param limit The number of coins to return (Max 250)
+ * @returns An array of coins
+ */
+const get_top = async (limit = 250): Promise<Coin[]> => {
+    const data: Coin[] = [];
+    const url = `/coins/markets?vs_currency=usd&category=cryptocurrency&order=market_cap_desc&per_page=250&page=1&sparkline=false`;
+    const res = await callGecko(url, 'GET');
+
+    if (res) {
+        const dataJSON = JSON.parse(res);
+        [...dataJSON].forEach(entry => {
+            const coin = <Coin>{};
+
+            coin.coingeckoId = entry.id;
+            coin.symbol = entry.symbol;
+            coin.name = entry.name;
+
+            data.push(coin);
+        });
+    }
+
+    return data.slice(0, limit);
+};
+
 const GeckoService = {
     is_online,
     search,
     get_info,
     get_data,
+    get_top,
 };
 
 export default GeckoService;

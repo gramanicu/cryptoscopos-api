@@ -4,7 +4,6 @@ import { NextFunction, Request, Response } from 'express';
 import _Service from '../services/_.service';
 import GeckoService from '../services/gecko.service';
 import CoinService from '../services/coins.service';
-import { readSync } from 'fs';
 
 const index = async (req: Request, res: Response, next: NextFunction) => {
     // try {
@@ -16,8 +15,7 @@ const index = async (req: Request, res: Response, next: NextFunction) => {
     // }
 
     try {
-        await CoinService.update_info();
-        return res.sendStatus(200);
+        return res.send(await CoinService.update_info());
     } catch (e) {
         return res.sendStatus(500);
     }
