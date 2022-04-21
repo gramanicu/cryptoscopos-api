@@ -43,6 +43,8 @@ model Coin {
   updatedAt DateTime @updatedAt
 
   coingeckoId String
+  symbol      String
+  name        String
   information CoinInformation?
 
   accounts Account[]
@@ -51,10 +53,11 @@ model Coin {
 }
 
 model CoinInformation {
-  id          String  @id @default(cuid())
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   coin        Coin    @relation(fields: [coinId], references: [id])
-  symbol      String
-  name        String
   description String?
   homepage    String?
   image       String?

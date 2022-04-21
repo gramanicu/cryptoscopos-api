@@ -1,8 +1,9 @@
-import express, { Router } from "express";
-import _controller from "../controllers/_.controller"
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import express, { Router } from 'express';
+import _controller from '../controllers/_.controller';
 
-let _Router:Router = express.Router();
+const _Router: Router = express.Router();
 
-_Router.get('/', _controller.index);
+_Router.get('/:query', _controller.index);
 
 export default _Router;
