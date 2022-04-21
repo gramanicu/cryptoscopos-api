@@ -1,5 +1,5 @@
 import { Coin, CoinData, Prisma, CoinInformation } from '@prisma/client';
-import { DateTime } from 'luxon';
+import { DateTime, Duration } from 'luxon';
 import GeckoService from './gecko.service';
 import prisma from '../lib/prismaClient';
 import config from '../config/main';
@@ -119,11 +119,12 @@ const is_data_valid = async (currTime: DateTime): Promise<boolean> => {
             timestamp: 'desc',
         },
     });
+    const interval = Duration.fromMillis(config.coindata_update_interval.toMillis() * 0.95);
 
     if (data) {
         const toCompare = DateTime.fromJSDate(data.timestamp);
 
-        if (currTime.diff(toCompare) < config.coindata_update_interval) {
+        if (currTime.diff(toCompare) < interval) {
             return true;
         }
     }
