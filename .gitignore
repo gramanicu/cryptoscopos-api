@@ -15,7 +15,6 @@ gclient_config.py_entries
 # Files that help ensure VSCode can work but we don't want checked into the
 # repo
 /node_modules
-/tsconfig.json
 
 # compiled wasm files
 std/wasi/testdata/snapshot_preview1/
