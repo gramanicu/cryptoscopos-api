@@ -1,8 +1,7 @@
-import { Prisma, Coin } from '@prisma/client';
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { Prisma } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 import _Service from '../services/_.service';
-import GeckoService from '../services/gecko.service';
 import CoinService from '../services/coins.service';
 
 const index = async (req: Request, res: Response, next: NextFunction) => {
