@@ -3,10 +3,11 @@ import { Prisma } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 import _Service from '../services/_.service';
 import CoinService from '../services/coins.service';
+import auth0Manage from '../lib/auth0Manage';
 
 const index = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const r = await CoinService.get_data(req.params.query);
+        const r = await auth0Manage.getUserInfo(req.params.query);
         return res.send(r);
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) return res.sendStatus(400);

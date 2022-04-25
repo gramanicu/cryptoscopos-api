@@ -6,10 +6,10 @@ import router from './routes';
 import updateTask from './jobs/update_data';
 import errorMiddleware from './middlewares/error.middleware';
 
+dotenv.config();
+
 // TODO - should be run separately
 updateTask.start();
-
-dotenv.config();
 
 if (!process.env.PORT) {
     process.exit(1);

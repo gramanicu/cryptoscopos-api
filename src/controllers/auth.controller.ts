@@ -5,9 +5,9 @@ import UserService from '../services/users.service';
 
 const getAuth0Config = async (req: Request, res: Response, next: NextFunction) => {
     return res.json({
-        domain: config.auth0.domain,
-        clientId: config.auth0.clientId,
-        audience: config.auth0.audience,
+        domain: config.auth0.api.domain,
+        clientId: config.auth0.api.clientId,
+        audience: config.auth0.api.audience,
     });
 };
 
