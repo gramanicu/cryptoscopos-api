@@ -23,6 +23,7 @@ const registerAuth0User = async (req: Request, res: Response, next: NextFunction
 
 const AuthController = {
     getAuth0Config,
+    registerAuth0User,
 };
 
 export default AuthController;
