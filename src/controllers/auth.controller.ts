@@ -2,6 +2,7 @@
 import { NextFunction, Request, Response } from 'express';
 import config from '../config/main';
 import UserService from '../services/users.service';
+import auth0Manage from '../lib/auth0Manage';
 
 const getAuth0Config = async (req: Request, res: Response, next: NextFunction) => {
     return res.json({
@@ -12,13 +13,12 @@ const getAuth0Config = async (req: Request, res: Response, next: NextFunction) =
 };
 
 const registerAuth0User = async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.body);
-    // const user = await UserService.store({
-    //     type:
-    // })
-    return res.json({
-        data: req.body,
-    });
+    // Create the user in the DB
+    const auth0_id = String(req.body.params.auth0_id);
+    await UserService.store({ auth0_id });
+    await auth0Manage.makeUserDefault(auth0_id);
+
+    return res.sendStatus(200);
 };
 
 const AuthController = {

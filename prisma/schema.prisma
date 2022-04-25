@@ -16,7 +16,6 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  type       UserTypes @default(BASE)
   private_id String? /// Used by discord, etc..
   auth0_id   String? /// The id used to identify the user on auth0
 
@@ -25,15 +24,6 @@ model User {
   tickets        Ticket[]
   ticketMessages TicketMessage[]
   @@map(name: "users")
-}
-
-/// All the user types inside the application
-enum UserTypes {
-  ADMIN
-  STAFF
-  DEVELOPER
-  BASE
-  PRIVATE
 }
 
 /// A crypto coin that is tracked by the system

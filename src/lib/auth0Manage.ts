@@ -54,9 +54,41 @@ const getUserInfo = async (auth0_id: string): Promise<string> => {
     return '';
 };
 
+const makeUserDefault = async (auth0_id: string) => {
+    let manageToken = '';
+    if (await redis.exists(tokenKey)) {
+        manageToken = String(await redis.get(tokenKey));
+    } else {
+        await updateManageToken();
+        manageToken = String(await redis.get(tokenKey));
+    }
+
+    let res: AxiosResponse;
+    try {
+        res = await axios.request({
+            method: 'POST',
+            url: `/api/v2/users/${auth0_id}/roles`,
+            baseURL: `https://${config.auth0.api.domain}`,
+            headers: {
+                authorization: `Bearer ${manageToken}`,
+            },
+            data: {
+                roles: ['rol_KX84vSCK5n1jO5f6'],
+            },
+        });
+
+        return JSON.stringify(res.data);
+    } catch (err) {
+        console.error(err);
+    }
+
+    return '';
+};
+
 const auth0Manage = {
     getUserInfo,
     updateManageToken,
+    makeUserDefault,
 };
 
 export default auth0Manage;
