@@ -10,15 +10,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// Someone who uses the application
+/// Someone who uses the application. All users are managed on auth0, with the exeption of PRIVATE accounts (discord bot users)
 model User {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  type UserTypes @default(BASE)
-
-  // Based on type, there may be AUTH0_DATA, PRIVATE_DATA, DEV_DATA, etc.. Some users may have multiple connections, with specific data.
+  type       UserTypes @default(BASE)
+  private_id String? /// Used by discord, etc..
+  auth0_id   String? /// The id used to identify the user on auth0
 
   accounts       Account[]
   alerts         Alert[]
