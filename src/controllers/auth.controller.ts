@@ -21,9 +21,18 @@ const registerAuth0User = async (req: Request, res: Response, next: NextFunction
     return res.sendStatus(200);
 };
 
+const registerPrivateUser = async (req: Request, res: Response, next: NextFunction) => {
+    // Create the user in the DB
+    const private_id = String(req.body.params.id);
+    await UserService.store({ private_id });
+
+    return res.sendStatus(200);
+};
+
 const AuthController = {
     getAuth0Config,
     registerAuth0User,
+    registerPrivateUser,
 };
 
 export default AuthController;

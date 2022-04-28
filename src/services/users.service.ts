@@ -15,17 +15,13 @@ const index = async (): Promise<User[]> => {
 };
 
 /**
- *
- * @param id
- * @returns
+ * Search for the user that matches the condition
+ * @param searchFor What parameters to search for
+ * @returns The user, if any was found
  */
-const show = async (id: string): Promise<User | null> => {
+const show = async (searchFor: Prisma.UserFindFirstArgs): Promise<User | null> => {
     try {
-        const user = await prisma.user.findFirst({
-            where: {
-                id: id,
-            },
-        });
+        const user = await prisma.user.findFirst(searchFor);
 
         return user;
     } catch (err) {
@@ -33,6 +29,11 @@ const show = async (id: string): Promise<User | null> => {
     }
 };
 
+/**
+ * Add a new user to the db
+ * @param data The data associated with the user
+ * @returns The new user, if the operation succeeded
+ */
 const store = async (data: Prisma.UserCreateInput): Promise<User | null> => {
     try {
         const user = await prisma.user.create({

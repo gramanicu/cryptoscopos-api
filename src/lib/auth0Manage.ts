@@ -26,6 +26,38 @@ const updateManageToken = async () => {
     }
 };
 
+/**
+ * Get the user information associated to an access token
+ * @param token The access token
+ * @returns The information
+ */
+const getTokenUserInfo = async (token: string): Promise<string> => {
+    let res: AxiosResponse;
+    try {
+        res = await axios.request({
+            method: 'GET',
+            url: `/userinfo`,
+            baseURL: `https://${config.auth0.api.domain}`,
+            headers: {
+                authorization: `Bearer ${token}`,
+            },
+        });
+
+        return JSON.stringify(res.data);
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw error;
+        } else {
+            throw new Error('different error than axios');
+        }
+    }
+};
+
+/**
+ * Get information about a user
+ * @param auth0_id The id of the user for whom to get information
+ * @returns The information of user, as a string containing a JSON
+ */
 const getUserInfo = async (auth0_id: string): Promise<string> => {
     let manageToken = '';
     if (await redis.exists(tokenKey)) {
@@ -47,11 +79,13 @@ const getUserInfo = async (auth0_id: string): Promise<string> => {
         });
 
         return JSON.stringify(res.data);
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw error;
+        } else {
+            throw new Error('different error than axios');
+        }
     }
-
-    return '';
 };
 
 const makeUserDefault = async (auth0_id: string) => {
@@ -89,6 +123,7 @@ const auth0Manage = {
     getUserInfo,
     updateManageToken,
     makeUserDefault,
+    getTokenUserInfo,
 };
 
 export default auth0Manage;

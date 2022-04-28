@@ -91,6 +91,10 @@ const get_data = async (gecko_ids: string[]): Promise<{ geckoId: string; value: 
     return data;
 };
 
+/**
+ * Check if the CoinGecko API is available
+ * @returns If it is online
+ */
 const is_online = async (): Promise<boolean> => {
     const url = `/ping`;
     const res = await callGecko(url, 'GET');

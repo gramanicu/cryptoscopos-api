@@ -47,7 +47,7 @@ model CoinInformation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  coin        Coin    @relation(fields: [coinId], references: [id])
+  coin        Coin    @relation(fields: [coinId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   description String?
   homepage    String?
   image       String?
@@ -63,7 +63,7 @@ model CoinData {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  coin      Coin     @relation(fields: [coinId], references: [id])
+  coin      Coin     @relation(fields: [coinId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   timestamp DateTime /// The timestamp of the datapoint (it isn't always the same as the createdAt field)
   value     Float /// The value in $USD of the specific cryptocurrency
 
@@ -78,8 +78,8 @@ model Account {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  owner       User    @relation(fields: [userId], references: [id])
-  currency    Coin    @relation(fields: [coinId], references: [id])
+  owner       User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  currency    Coin    @relation(fields: [coinId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   name        String
   description String?
   image       String?
@@ -96,10 +96,11 @@ model Transaction {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  account Account @relation(fields: [accountId], references: [id])
-  amount  Float /// The cryptocurrency amount
-  value   Float /// The value in $USD
-  comment String? /// Any specific information related to the transaction
+  account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  amount    Float /// The cryptocurrency amount
+  value     Float /// The value in $USD
+  comment   String? /// Any specific information related to the transaction
+  timestamp DateTime /// When was the transaction done
 
   accountId String
   @@map(name: "transactions")
@@ -112,7 +113,7 @@ model Alert {
   updatedAt DateTime @updatedAt
 
   /// The user who created the alert. This is important, as only the owner of an account can set alerts related to that account.
-  createdBy User @relation(fields: [userId], references: [id])
+  createdBy User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   trigger     String /// The condition that will trigger the alert
   name        String
@@ -130,7 +131,7 @@ model Notification {
   updatedAt DateTime @updatedAt
 
   type        NotificationTypes @default(EMAIL)
-  triggeredBy Alert             @relation(fields: [alertId], references: [id])
+  triggeredBy Alert             @relation(fields: [alertId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   message     String
 
   alertId String
@@ -150,7 +151,7 @@ model Ticket {
 
   subject   String
   type      TicketTypes
-  createdBy User        @relation(fields: [userId], references: [id])
+  createdBy User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   messages TicketMessage[]
   userId   String
@@ -168,8 +169,8 @@ model TicketMessage {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  part_of   Ticket @relation(fields: [ticketId], references: [id])
-  writtenBy User   @relation(fields: [userId], references: [id])
+  part_of   Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  writtenBy User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   content   String
 
   ticketId           String

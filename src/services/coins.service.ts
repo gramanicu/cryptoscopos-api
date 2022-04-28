@@ -132,6 +132,10 @@ const is_data_valid = async (currTime: DateTime): Promise<boolean> => {
     return false;
 };
 
+/**
+ * Update data for each registered coin, if the data is no longer valid (timeout passed)
+ * @param force If the update should be forced
+ */
 const update_data = async (force = false) => {
     const time = DateTime.now();
 

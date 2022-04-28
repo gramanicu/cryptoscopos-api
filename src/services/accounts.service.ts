@@ -26,27 +26,23 @@ const all_accounts = async (userId?: string): Promise<Account[]> => {
 
 /**
  * Return an account from the DB
- * @param id The account to retrieve
- * @param incl_trans If it should retrieved all the transactions for the account (default false)
- * @returns The specified account
+ * @param searchFor What to search for
+ * @returns The account (if found)
  */
-const show_account = async (id: string, incl_trans = false): Promise<Account | null> => {
+const show_account = async (searchFor: Prisma.AccountFindFirstArgs): Promise<Account | null> => {
     try {
-        const account = await prisma.account.findFirst({
-            where: {
-                id: id,
-            },
-            include: {
-                transactions: incl_trans,
-            },
-        });
-
+        const account = await prisma.account.findFirst(searchFor);
         return account;
     } catch (err) {
         return null;
     }
 };
 
+/**
+ * Create a new account
+ * @param data The account data
+ * @returns The created account, if the operation succeeded
+ */
 const create_account = async (data: Prisma.AccountCreateInput): Promise<Account | null> => {
     try {
         const account = await prisma.account.create({
@@ -59,10 +55,50 @@ const create_account = async (data: Prisma.AccountCreateInput): Promise<Account 
     }
 };
 
+/**
+ * Delete an account
+ * @param searchFor What account to delete
+ * @returns The deleted account
+ */
+const remove_account = async (searchFor: Prisma.AccountDeleteArgs): Promise<Account | null> => {
+    try {
+        const account = await prisma.account.delete(searchFor);
+        return account;
+    } catch (err) {
+        return null;
+    }
+};
+
+/**
+ * Update information about an account. Connections (owner and currency) cannot be changed
+ * @param account_id The account to update
+ * @param name The new name of the account
+ * @param description The new description of the account (OPTIONAL)
+ * @returns The modified account
+ */
+const update_account = async (account_id: string, name: string, description?: string): Promise<Account | null> => {
+    try {
+        const account = await prisma.account.update({
+            where: {
+                id: account_id,
+            },
+            data: {
+                name,
+                description,
+            },
+        });
+        return account;
+    } catch (err) {
+        return null;
+    }
+};
+
 const AccountService = {
     all_accounts,
     show_account,
     create_account,
+    remove_account,
+    update_account,
 };
 
 export default AccountService;

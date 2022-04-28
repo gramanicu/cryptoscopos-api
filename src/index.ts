@@ -9,7 +9,7 @@ import errorMiddleware from './middlewares/error.middleware';
 dotenv.config();
 
 // TODO - should be run separately
-updateTask.start();
+// updateTask.start();
 
 if (!process.env.PORT) {
     process.exit(1);
