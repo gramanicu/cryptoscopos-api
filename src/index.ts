@@ -5,11 +5,14 @@ import helmet from 'helmet';
 import router from './routes';
 import updateTask from './jobs/update_data';
 import errorMiddleware from './middlewares/error.middleware';
+import config from './config/main';
 
 dotenv.config();
 
 // TODO - should be run separately
-// updateTask.start();
+if (config.run_worker) {
+    updateTask.start();
+}
 
 if (!process.env.PORT) {
     process.exit(1);

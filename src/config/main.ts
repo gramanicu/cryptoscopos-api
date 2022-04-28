@@ -11,4 +11,5 @@ export default {
     crons: cronsConfig,
     auth0: auth0Config,
     redis_url: process.env.REDIS_URL,
+    run_worker: !(process.env.RUN_WORKER === 'false'),
 };

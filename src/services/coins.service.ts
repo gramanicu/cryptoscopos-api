@@ -103,6 +103,9 @@ const get_data = async (gecko_id: string, start_date?: DateTime, end_date?: Date
                 lte: end_date.toISO(),
             },
         },
+        orderBy: {
+            timestamp: 'desc',
+        },
     });
 
     return data;
@@ -211,6 +214,36 @@ const update_info = async () => {
     }
 };
 
+/**
+ * Search for coins in the db. Matches the coingecko_id first, then name, then symbol.
+ * @param search_term The term to search form
+ * @returns The top 10 search results
+ */
+const search = async (search_term: string): Promise<Coin[]> => {
+    try {
+        const coins = await prisma.coin.findMany({
+            where: {
+                OR: [
+                    {
+                        coingeckoId: search_term,
+                    },
+
+                    {
+                        name: search_term,
+                    },
+                    {
+                        symbol: search_term,
+                    },
+                ],
+            },
+        });
+
+        return coins.slice(0, 10);
+    } catch (err) {
+        return [];
+    }
+};
+
 const CoinService = {
     index,
     show,
@@ -218,6 +251,7 @@ const CoinService = {
     update_data,
     update_info,
     get_data,
+    search,
 };
 
 export default CoinService;
