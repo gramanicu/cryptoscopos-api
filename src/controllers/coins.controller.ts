@@ -4,7 +4,7 @@ import axios from 'axios';
 import { NextFunction, Request, Response } from 'express';
 import CoinService from '../services/coins.service';
 import UserService from '../services/users.service';
-import GeckoService from '../../dist/src/services/gecko.service';
+import GeckoService from '../services/gecko.service';
 import { DateTime } from 'luxon';
 
 // Get all the coins stored in the db
