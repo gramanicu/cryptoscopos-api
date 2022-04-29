@@ -165,6 +165,7 @@ const get_stats = async (gecko_id: string): Promise<CoinStats | null> => {
 
             return {
                 last_update: last_update.toJSDate(),
+                value: data[0].value,
                 last_1h: last_hour_value ? percentageChange(data[0].value, last_hour_value.value) : 'unavailable',
                 last_24h: last_24hour_value ? percentageChange(data[0].value, last_24hour_value.value) : 'unavailable',
                 last_7day: last_7day_value ? percentageChange(data[0].value, last_7day_value.value) : 'unavailable',
@@ -174,6 +175,7 @@ const get_stats = async (gecko_id: string): Promise<CoinStats | null> => {
         }
         return {
             last_update: last_update.toJSDate(),
+            value: 'unavailable',
             last_1h: 'unavailable',
             last_24h: 'unavailable',
             last_7day: 'unavailable',
@@ -323,6 +325,7 @@ const search = async (search_term: string): Promise<Coin[]> => {
  */
 export interface CoinStats {
     gecko_id: string;
+    value: number | 'unavailable';
     last_update: Date | 'unavailable';
     last_1h: number | 'unavailable';
     last_24h: number | 'unavailable';
