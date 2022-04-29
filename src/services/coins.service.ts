@@ -112,6 +112,80 @@ const get_data = async (gecko_id: string, start_date?: DateTime, end_date?: Date
 };
 
 /**
+ * Compute the percentage change between two numbers
+ * @param n1 The number that stayed the same
+ * @param n2 The new value of that number
+ * @returns The percentage change between n1 and n2
+ */
+function percentageChange(n1: number, n2: number): number {
+    return ((n2 - n1) / n1) * 100;
+}
+
+const get_stats = async (gecko_id: string): Promise<CoinStats | null> => {
+    const data = await prisma.coinData.findMany({
+        where: {
+            coin: {
+                coingeckoId: gecko_id,
+            },
+        },
+        orderBy: {
+            timestamp: 'desc',
+        },
+    });
+
+    if (data.length > 0) {
+        const last_update = DateTime.fromJSDate(data[0].timestamp);
+
+        if (data.length > 1) {
+            const processed = data.slice(1).reverse();
+            const last_hour_value = processed.find(elem => {
+                return (
+                    DateTime.fromJSDate(elem.timestamp).diffNow('hours') >= Duration.fromDurationLike({ hours: -2 }) &&
+                    DateTime.fromJSDate(elem.timestamp).diffNow('days') < Duration.fromDurationLike({ hours: -1 })
+                );
+            });
+            const last_24hour_value = processed.find(elem => {
+                return (
+                    DateTime.fromJSDate(elem.timestamp).diffNow('hours') >= Duration.fromDurationLike({ hours: -25 }) &&
+                    DateTime.fromJSDate(elem.timestamp).diffNow('days') < Duration.fromDurationLike({ hours: -24 })
+                );
+            });
+            const last_7day_value = processed.find(elem => {
+                return (
+                    DateTime.fromJSDate(elem.timestamp).diffNow('days') >= Duration.fromDurationLike({ days: -8 }) &&
+                    DateTime.fromJSDate(elem.timestamp).diffNow('days') < Duration.fromDurationLike({ days: -7 })
+                );
+            });
+            const last_30day_value = processed.find(elem => {
+                return (
+                    DateTime.fromJSDate(elem.timestamp).diffNow('days') >= Duration.fromDurationLike({ days: -31 }) &&
+                    DateTime.fromJSDate(elem.timestamp).diffNow('days') < Duration.fromDurationLike({ days: -30 })
+                );
+            });
+
+            return {
+                last_update: last_update.toJSDate(),
+                last_1h: last_hour_value ? percentageChange(data[0].value, last_hour_value.value) : 'unavailable',
+                last_24h: last_24hour_value ? percentageChange(data[0].value, last_24hour_value.value) : 'unavailable',
+                last_7day: last_7day_value ? percentageChange(data[0].value, last_7day_value.value) : 'unavailable',
+                last_30day: last_30day_value ? percentageChange(data[0].value, last_30day_value.value) : 'unavailable',
+                gecko_id,
+            };
+        }
+        return {
+            last_update: last_update.toJSDate(),
+            last_1h: 'unavailable',
+            last_24h: 'unavailable',
+            last_7day: 'unavailable',
+            last_30day: 'unavailable',
+            gecko_id,
+        };
+    } else {
+        return null;
+    }
+};
+
+/**
  * Check if the coin data is still valid (if the update_interval has passed, the data is no longer valid)
  * @param currTime The current time (it is passed, as there can be multiple comparisons made during the same operation, and all should have the same result)
  * @returns If the data is still valid.
@@ -244,6 +318,18 @@ const search = async (search_term: string): Promise<Coin[]> => {
     }
 };
 
+/**
+ * Statistics about a coin (percentage change of value)
+ */
+export interface CoinStats {
+    gecko_id: string;
+    last_update: Date | 'unavailable';
+    last_1h: number | 'unavailable';
+    last_24h: number | 'unavailable';
+    last_7day: number | 'unavailable';
+    last_30day: number | 'unavailable';
+}
+
 const CoinService = {
     index,
     show,
@@ -251,6 +337,7 @@ const CoinService = {
     update_data,
     update_info,
     get_data,
+    get_stats,
     search,
 };
 
