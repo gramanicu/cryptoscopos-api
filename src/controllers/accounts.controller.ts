@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from 'axios';
-import { Prisma, Account } from '@prisma/client';
+import { Prisma, Account, Coin } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 import AccountService from '../services/accounts.service';
 import UserService from '../services/users.service';
 import CoinService from '../services/coins.service';
 import TransactionService from '../services/transactions.service';
+import { DateTime } from 'luxon';
+import prisma from '../lib/prismaClient';
 
 // Get all the accounts associated with the user
 const index = async (req: Request, res: Response, next: NextFunction) => {
@@ -235,9 +237,14 @@ const transactionsRemove = async (req: Request, res: Response, next: NextFunctio
 // Add a new transaction to the account
 const transactionsCreate = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.body || !req.params) return res.sendStatus(400);
-    // TODO - if not specified, get the timestamp and value automatically
-    if (!req.params.id || !req.body.comment || !req.body.timestamp || !req.body.value || !req.body.amount)
-        return res.sendStatus(400);
+    if (!req.params.id || !req.body.comment || !req.body.amount) return res.sendStatus(400);
+
+    let timestamp = req.body.timestamp;
+    let value = req.body.timestamp;
+
+    if (!req.body.timestamp) {
+        timestamp = DateTime.now().toISO();
+    }
 
     try {
         const user = await UserService.show({
@@ -256,10 +263,45 @@ const transactionsCreate = async (req: Request, res: Response, next: NextFunctio
         });
 
         if (account) {
+            if (!req.body.value) {
+                const coin = await prisma.coin.findFirst({
+                    where: {
+                        id: account.coinId,
+                    },
+                });
+
+                const data = await prisma.coinData.findFirst({
+                    where: {
+                        coinId: coin?.id,
+                        timestamp: {
+                            gt: DateTime.fromISO(timestamp).plus({ hours: 1 }).toISO(),
+                            lt: DateTime.fromISO(timestamp).minus({ hours: 1 }).toISO(),
+                        },
+                    },
+                    orderBy: {
+                        timestamp: 'desc',
+                    },
+                });
+
+                if (data) {
+                    value = data?.value;
+                } else {
+                    const data1 = await prisma.coinData.findFirst({
+                        where: {
+                            coinId: coin?.id,
+                        },
+                        orderBy: {
+                            timestamp: 'desc',
+                        },
+                    });
+                    value = data1?.value;
+                }
+            }
+
             const transaction = await TransactionService.create_transaction({
-                timestamp: req.body.timestamp,
+                timestamp: timestamp,
                 comment: req.body.comment,
-                value: req.body.value,
+                value: value,
                 amount: req.body.amount,
                 account: {
                     connect: {
