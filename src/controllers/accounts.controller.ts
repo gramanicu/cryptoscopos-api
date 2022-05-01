@@ -241,6 +241,7 @@ const transactionsCreate = async (req: Request, res: Response, next: NextFunctio
 
     let timestamp = req.body.timestamp;
     let value = req.body.timestamp;
+    const amount = req.body.amount as number;
 
     if (!req.body.timestamp) {
         timestamp = DateTime.now().toISO();
@@ -284,7 +285,7 @@ const transactionsCreate = async (req: Request, res: Response, next: NextFunctio
                 });
 
                 if (data) {
-                    value = data?.value;
+                    value = (data?.value as number) * amount;
                 } else {
                     const data1 = await prisma.coinData.findFirst({
                         where: {
@@ -294,7 +295,7 @@ const transactionsCreate = async (req: Request, res: Response, next: NextFunctio
                             timestamp: 'desc',
                         },
                     });
-                    value = data1?.value;
+                    value = (data1?.value as number) * amount;
                 }
             }
 
