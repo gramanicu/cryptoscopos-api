@@ -2,7 +2,6 @@
 import express, { Router } from 'express';
 import AccountsController from '../controllers/accounts.controller';
 import UserInfoMiddleware from '../middlewares/userinfo.middleware';
-import PrivateUserMiddleware from '../middlewares/privateuser.middleware';
 
 const AccountsRouter: Router = express.Router();
 

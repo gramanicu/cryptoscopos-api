@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import express, { Router } from 'express';
 import AccountsController from '../controllers/accounts.controller';
-import PrivateUserMiddleware from '../middlewares/privateuser.middleware';
+import PrivateUserMiddleware from '../middlewares/privateUser.middleware';
 
 const PrivateAccountsRouter: Router = express.Router();
 
