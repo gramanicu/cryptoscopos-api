@@ -166,10 +166,10 @@ const get_stats = async (gecko_id: string): Promise<CoinStats | null> => {
             return {
                 last_update: last_update.toJSDate(),
                 value: data[0].value,
-                last_1h: last_hour_value ? percentageChange(data[0].value, last_hour_value.value) : 'unavailable',
-                last_24h: last_24hour_value ? percentageChange(data[0].value, last_24hour_value.value) : 'unavailable',
-                last_7day: last_7day_value ? percentageChange(data[0].value, last_7day_value.value) : 'unavailable',
-                last_30day: last_30day_value ? percentageChange(data[0].value, last_30day_value.value) : 'unavailable',
+                last_1h: last_hour_value ? percentageChange(last_hour_value.value, data[0].value) : 'unavailable',
+                last_24h: last_24hour_value ? percentageChange(last_24hour_value.value, data[0].value) : 'unavailable',
+                last_7day: last_7day_value ? percentageChange(last_7day_value.value, data[0].value) : 'unavailable',
+                last_30day: last_30day_value ? percentageChange(last_30day_value.value, data[0].value) : 'unavailable',
                 gecko_id,
             };
         }
