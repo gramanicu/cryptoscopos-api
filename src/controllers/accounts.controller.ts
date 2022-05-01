@@ -10,7 +10,9 @@ import TransactionService from '../services/transactions.service';
 // Get all the accounts associated with the user
 const index = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const user = await UserService.show({ where: { auth0_id: res.locals.auth0_id } });
+        const user = await UserService.show({
+            where: { auth0_id: res.locals.auth0_id, OR: { private_id: res.locals.private_id } },
+        });
 
         if (user) {
             const accounts = await AccountService.all_accounts(user.id);
@@ -31,7 +33,9 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.body.gecko_id || !req.body.name) return res.sendStatus(400);
 
     try {
-        const user = await UserService.show({ where: { auth0_id: res.locals.auth0_id } });
+        const user = await UserService.show({
+            where: { auth0_id: res.locals.auth0_id, OR: { private_id: res.locals.private_id } },
+        });
         const coin = await CoinService.show(req.body.gecko_id);
 
         if (user && coin) {
@@ -67,7 +71,9 @@ const get = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params.id) return res.sendStatus(400);
 
     try {
-        const user = await UserService.show({ where: { auth0_id: res.locals.auth0_id } });
+        const user = await UserService.show({
+            where: { auth0_id: res.locals.auth0_id, OR: { private_id: res.locals.private_id } },
+        });
 
         if (user) {
             const account = await AccountService.show_account({
@@ -103,7 +109,9 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params.id) return res.sendStatus(400);
 
     try {
-        const user = await UserService.show({ where: { auth0_id: res.locals.auth0_id } });
+        const user = await UserService.show({
+            where: { auth0_id: res.locals.auth0_id, OR: { private_id: res.locals.private_id } },
+        });
 
         if (user) {
             const account = await AccountService.remove_account({
@@ -133,7 +141,9 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params.id || !req.body.name) return res.sendStatus(400);
 
     try {
-        const user = await UserService.show({ where: { auth0_id: res.locals.auth0_id } });
+        const user = await UserService.show({
+            where: { auth0_id: res.locals.auth0_id, OR: { private_id: res.locals.private_id } },
+        });
 
         let account: Account | null;
         if (user) {
@@ -230,7 +240,9 @@ const transactionsCreate = async (req: Request, res: Response, next: NextFunctio
         return res.sendStatus(400);
 
     try {
-        const user = await UserService.show({ where: { auth0_id: res.locals.auth0_id } });
+        const user = await UserService.show({
+            where: { auth0_id: res.locals.auth0_id, OR: { private_id: res.locals.private_id } },
+        });
 
         if (!user) {
             return res.sendStatus(404);
@@ -277,7 +289,9 @@ const transactionsUpdate = async (req: Request, res: Response, next: NextFunctio
     if (!req.params.id || !req.params.transaction_id || !req.body.comment) return res.sendStatus(400);
 
     try {
-        const user = await UserService.show({ where: { auth0_id: res.locals.auth0_id } });
+        const user = await UserService.show({
+            where: { auth0_id: res.locals.auth0_id, OR: { private_id: res.locals.private_id } },
+        });
 
         if (!user) {
             return res.sendStatus(404);
