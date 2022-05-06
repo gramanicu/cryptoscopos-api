@@ -45,6 +45,7 @@ const getTokenUserInfo = async (token: string): Promise<string> => {
 
         return JSON.stringify(res.data);
     } catch (error) {
+        console.log(error);
         if (axios.isAxiosError(error)) {
             throw error;
         } else {

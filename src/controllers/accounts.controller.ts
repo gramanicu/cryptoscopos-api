@@ -13,7 +13,7 @@ import prisma from '../lib/prismaClient';
 const index = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = await UserService.show({
-            where: { auth0_id: res.locals.auth0_id, OR: { private_id: res.locals.private_id } },
+            where: { OR: [{ private_id: res.locals.private_id }, { auth0_id: res.locals.auth0_id }] },
         });
 
         if (user) {
@@ -36,7 +36,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         const user = await UserService.show({
-            where: { auth0_id: res.locals.auth0_id, OR: { private_id: res.locals.private_id } },
+            where: { OR: [{ private_id: res.locals.private_id }, { auth0_id: res.locals.auth0_id }] },
         });
         const coin = await CoinService.show(req.body.gecko_id);
 
@@ -74,7 +74,7 @@ const get = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         const user = await UserService.show({
-            where: { auth0_id: res.locals.auth0_id, OR: { private_id: res.locals.private_id } },
+            where: { OR: [{ private_id: res.locals.private_id }, { auth0_id: res.locals.auth0_id }] },
         });
 
         if (user) {
@@ -112,7 +112,7 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         const user = await UserService.show({
-            where: { auth0_id: res.locals.auth0_id, OR: { private_id: res.locals.private_id } },
+            where: { OR: [{ private_id: res.locals.private_id }, { auth0_id: res.locals.auth0_id }] },
         });
 
         if (user) {
@@ -144,7 +144,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         const user = await UserService.show({
-            where: { auth0_id: res.locals.auth0_id, OR: { private_id: res.locals.private_id } },
+            where: { OR: [{ private_id: res.locals.private_id }, { auth0_id: res.locals.auth0_id }] },
         });
 
         let account: Account | null;
@@ -249,7 +249,7 @@ const transactionsCreate = async (req: Request, res: Response, next: NextFunctio
 
     try {
         const user = await UserService.show({
-            where: { auth0_id: res.locals.auth0_id, OR: { private_id: res.locals.private_id } },
+            where: { OR: [{ private_id: res.locals.private_id }, { auth0_id: res.locals.auth0_id }] },
         });
 
         if (!user) {
@@ -333,7 +333,7 @@ const transactionsUpdate = async (req: Request, res: Response, next: NextFunctio
 
     try {
         const user = await UserService.show({
-            where: { auth0_id: res.locals.auth0_id, OR: { private_id: res.locals.private_id } },
+            where: { OR: [{ private_id: res.locals.private_id }, { auth0_id: res.locals.auth0_id }] },
         });
 
         if (!user) {
