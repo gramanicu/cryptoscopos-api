@@ -10,13 +10,19 @@ const UserInfoMiddleware = async (req: Request, res: Response, next: NextFunctio
         const key = `${redisPrefix}${token}`;
 
         if (!(await redis.exists(key))) {
-            const userString = await auth0Manage.getTokenUserInfo(token);
-            await redis.set(key, userString, 'EX', 1800);
+            try {
+                const userString = await auth0Manage.getTokenUserInfo(token);
+                await redis.set(key, userString, 'EX', 1800);
+                next();
+            } catch (err) {
+                res.sendStatus(403);
+                res.end();
+            }
+        } else {
+            res.locals.auth0_id = JSON.parse(String(await redis.get(key))).sub;
+            next();
         }
-
-        res.locals.auth0_id = JSON.parse(String(await redis.get(key))).sub;
     }
-    next();
 };
 
 export default UserInfoMiddleware;
