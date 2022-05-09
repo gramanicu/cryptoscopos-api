@@ -10,7 +10,17 @@ import config from '../config/main';
  */
 const index = async (): Promise<Coin[]> => {
     try {
-        const coins = await prisma.coin.findMany({ include: { information: true } });
+        const coins = await prisma.coin.findMany({
+            include: {
+                information: {
+                    select: {
+                        homepage: true,
+                        image: true,
+                        description: true,
+                    },
+                },
+            },
+        });
         return coins;
     } catch (err) {
         return [];
@@ -31,7 +41,13 @@ const show = async (gecko_id: string): Promise<Coin | null> => {
                 },
             },
             include: {
-                information: true,
+                information: {
+                    select: {
+                        homepage: true,
+                        image: true,
+                        description: true,
+                    },
+                },,
             },
         });
 
@@ -99,7 +115,13 @@ const store = async (gecko_id: string): Promise<Coin | null> => {
             },
         },
         include: {
-            information: true,
+            information: {
+                select: {
+                    homepage: true,
+                    image: true,
+                    description: true,
+                },
+            },
         },
     });
 
@@ -313,7 +335,13 @@ const update_info = async () => {
                 },
             },
             include: {
-                information: true,
+                information: {
+                    select: {
+                        homepage: true,
+                        image: true,
+                        description: true,
+                    },
+                },
             },
         });
     }
