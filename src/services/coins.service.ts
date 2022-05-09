@@ -47,7 +47,7 @@ const show = async (gecko_id: string): Promise<Coin | null> => {
                         image: true,
                         description: true,
                     },
-                },,
+                },
             },
         });
 
