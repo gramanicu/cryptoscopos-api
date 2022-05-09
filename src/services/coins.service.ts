@@ -10,7 +10,7 @@ import config from '../config/main';
  */
 const index = async (): Promise<Coin[]> => {
     try {
-        const coins = await prisma.coin.findMany();
+        const coins = await prisma.coin.findMany({ include: { information: true } });
         return coins;
     } catch (err) {
         return [];
@@ -29,6 +29,9 @@ const show = async (gecko_id: string): Promise<Coin | null> => {
                 coingeckoId: {
                     equals: gecko_id,
                 },
+            },
+            include: {
+                information: true,
             },
         });
 
