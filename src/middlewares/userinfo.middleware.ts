@@ -13,6 +13,7 @@ const UserInfoMiddleware = async (req: Request, res: Response, next: NextFunctio
             try {
                 const userString = await auth0Manage.getTokenUserInfo(token);
                 await redis.set(key, userString, 'EX', 1800);
+                res.locals.auth0_id = JSON.parse(userString).sub;
                 next();
             } catch (err) {
                 res.sendStatus(403);
