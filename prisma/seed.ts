@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import GeckoService from '../src/services/gecko.service';
+import CoinService from '../src/services/coins.service';
 const prisma = new PrismaClient();
 
 async function main() {
@@ -7,24 +8,14 @@ async function main() {
     let added = 0;
 
     for (const coin of coins) {
-        const res = await prisma.coin.upsert({
-            where: {
-                coingeckoId: coin.coingeckoId,
-            },
-            update: {},
-            create: {
-                coingeckoId: coin.coingeckoId,
-                name: coin.name,
-                symbol: coin.symbol,
-            },
-        });
+        const res = await CoinService.store(coin.coingeckoId);
 
         if (res) {
             added++;
         }
     }
 
-    console.log(`Added ${added} coins to the database`);
+    console.log(`Added pr updated ${added} coins of the database`);
 }
 
 main()

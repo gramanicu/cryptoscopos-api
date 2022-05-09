@@ -57,8 +57,11 @@ const store = async (gecko_id: string): Promise<Coin | null> => {
     }
 
     // This is a transaction that creates both the coin and the associated coin information
-    const coin = await prisma.coin.create({
-        data: {
+    const coin = await prisma.coin.upsert({
+        where: {
+            coingeckoId: newCoin.coingeckoId,
+        },
+        create: {
             coingeckoId: newCoin.coingeckoId,
             name: newCoin.name,
             symbol: newCoin.symbol,
@@ -69,6 +72,29 @@ const store = async (gecko_id: string): Promise<Coin | null> => {
                     image: newCoinInfo.image,
                     // TODO - check if this workaround is still needed
                     extra: newCoinInfo.extra as Prisma.JsonObject,
+                },
+            },
+        },
+        update: {
+            coingeckoId: newCoin.coingeckoId,
+            name: newCoin.name,
+            symbol: newCoin.symbol,
+            information: {
+                upsert: {
+                    create: {
+                        description: newCoinInfo.description,
+                        homepage: newCoinInfo.homepage,
+                        image: newCoinInfo.image,
+                        // TODO - check if this workaround is still needed
+                        extra: newCoinInfo.extra as Prisma.JsonObject,
+                    },
+                    update: {
+                        description: newCoinInfo.description,
+                        homepage: newCoinInfo.homepage,
+                        image: newCoinInfo.image,
+                        // TODO - check if this workaround is still needed
+                        extra: newCoinInfo.extra as Prisma.JsonObject,
+                    },
                 },
             },
         },
