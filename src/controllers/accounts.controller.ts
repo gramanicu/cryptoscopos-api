@@ -240,8 +240,9 @@ const transactionsCreate = async (req: Request, res: Response, next: NextFunctio
     if (!req.params.id || !req.body.comment || !req.body.amount) return res.sendStatus(400);
 
     let timestamp = req.body.timestamp;
-    let value = req.body.timestamp;
+    let value = req.body.value;
     const amount = req.body.amount as number;
+    const comment = req.body.comment;
 
     if (!req.body.timestamp) {
         timestamp = DateTime.now().toISO();
@@ -299,11 +300,13 @@ const transactionsCreate = async (req: Request, res: Response, next: NextFunctio
                 }
             }
 
+            console.log(`${timestamp} ${comment} ${value} ${amount} ${account.id}`);
+
             const transaction = await TransactionService.create_transaction({
                 timestamp: timestamp,
-                comment: req.body.comment,
+                comment: comment,
                 value: value,
-                amount: req.body.amount,
+                amount: amount,
                 account: {
                     connect: {
                         id: account.id,
