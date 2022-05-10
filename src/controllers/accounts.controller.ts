@@ -237,12 +237,16 @@ const transactionsRemove = async (req: Request, res: Response, next: NextFunctio
 // Add a new transaction to the account
 const transactionsCreate = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.body || !req.params) return res.sendStatus(400);
-    if (!req.params.id || !req.body.comment || !req.body.amount) return res.sendStatus(400);
+    if (!req.params.id || !req.body.amount) return res.sendStatus(400);
 
     let timestamp = req.body.timestamp;
     let value = req.body.value;
     const amount = req.body.amount as number;
-    const comment = req.body.comment;
+    let comment = req.body.comment;
+
+    if (!req.body.comment) {
+        comment = '';
+    }
 
     if (!req.body.timestamp) {
         timestamp = DateTime.now().toISO();
