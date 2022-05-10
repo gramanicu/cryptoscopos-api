@@ -13,6 +13,15 @@ const all_accounts = async (userId?: string): Promise<Account[]> => {
                 where: {
                     userId: userId,
                 },
+                include: {
+                    currency: {
+                        select: {
+                            name: true,
+                            coingeckoId: true,
+                            symbol: true,
+                        },
+                    },
+                },
             });
             return accounts;
         } else {

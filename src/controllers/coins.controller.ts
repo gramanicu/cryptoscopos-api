@@ -133,6 +133,26 @@ const get = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
+// Get a coin from the db using the id
+const getById = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.params) return res.sendStatus(400);
+    if (!req.params.id) return res.sendStatus(400);
+
+    try {
+        const coin = await CoinService.showById(req.params.id);
+
+        if (coin) {
+            return res.send(coin);
+        }
+
+        return res.sendStatus(404);
+    } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) return res.sendStatus(400);
+        if (axios.isAxiosError(e)) return res.sendStatus(404);
+        return res.sendStatus(500);
+    }
+};
+
 // Get the stats for a coin from the db using the gecko_id
 const get_stats = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params) return res.sendStatus(400);
@@ -202,6 +222,7 @@ const CoinsController = {
     index,
     create,
     get,
+    getById,
     internal_search,
     full_search,
     get_data,

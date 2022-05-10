@@ -58,6 +58,36 @@ const show = async (gecko_id: string): Promise<Coin | null> => {
 };
 
 /**
+ * Get a coin stored by the application.
+ * @param id The id of the coin to get (internal id)
+ * @returns A coin, if it exists inside the DB
+ */
+const showById = async (id: string): Promise<Coin | null> => {
+    try {
+        const coin = await prisma.coin.findFirst({
+            where: {
+                id: {
+                    equals: id,
+                },
+            },
+            include: {
+                information: {
+                    select: {
+                        homepage: true,
+                        image: true,
+                        description: true,
+                    },
+                },
+            },
+        });
+
+        return coin;
+    } catch (err) {
+        return null;
+    }
+};
+
+/**
  * Store a new coin inside the application's DB. The coin information will be retrieved from the GeckoService.
  * @param gecko_id The id of the coin to add to the application
  * @returns The new coin, if it was successfully stored.
@@ -389,6 +419,7 @@ export interface CoinStats {
 const CoinService = {
     index,
     show,
+    showById,
     store,
     update_data,
     update_info,

@@ -8,6 +8,7 @@ const CoinsRouter: Router = express.Router();
 CoinsRouter.get('/', CoinsController.index);
 CoinsRouter.get('/search/:search_term', CoinsController.internal_search);
 CoinsRouter.get('/full-search/:search_term', checkJwt, CoinsController.full_search);
+CoinsRouter.get('/get/:id', CoinsController.getById);
 CoinsRouter.get('/:gecko_id', CoinsController.get);
 CoinsRouter.get('/:gecko_id/data', CoinsController.get_data);
 CoinsRouter.get('/:gecko_id/stats', CoinsController.get_stats);
