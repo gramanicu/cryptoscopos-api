@@ -304,8 +304,6 @@ const transactionsCreate = async (req: Request, res: Response, next: NextFunctio
                 }
             }
 
-            console.log(`${timestamp} ${comment} ${value} ${amount} ${account.id}`);
-
             const transaction = await TransactionService.create_transaction({
                 timestamp: timestamp,
                 comment: comment,
