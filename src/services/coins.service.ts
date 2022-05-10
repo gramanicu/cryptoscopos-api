@@ -354,22 +354,18 @@ const update_info = async () => {
  */
 const search = async (search_term: string): Promise<Coin[]> => {
     try {
-        const coins = await prisma.coin.findMany({
-            where: {
-                OR: [
-                    {
-                        coingeckoId: search_term,
-                    },
+        const coins = await prisma.coin.findMany();
 
-                    {
-                        name: search_term,
-                    },
-                    {
-                        symbol: search_term,
-                    },
-                ],
-            },
-        });
+        if (coins) {
+            coins.filter(coin => {
+                if (search_term == '') return true;
+                return (
+                    coin.name.toLowerCase().includes(search_term.toLowerCase()) ||
+                    coin.coingeckoId.toLowerCase().includes(search_term.toLowerCase()) ||
+                    coin.symbol.toLowerCase().includes(search_term.toLowerCase())
+                );
+            });
+        }
 
         return coins.slice(0, 10);
     } catch (err) {
