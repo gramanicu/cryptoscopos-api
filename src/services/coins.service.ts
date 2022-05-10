@@ -384,10 +384,10 @@ const update_info = async () => {
  */
 const search = async (search_term: string): Promise<Coin[]> => {
     try {
-        const coins = await prisma.coin.findMany();
+        let coins = await prisma.coin.findMany();
 
         if (coins) {
-            coins.filter(coin => {
+            coins = coins.filter(coin => {
                 if (search_term == '') return true;
                 return (
                     coin.name.toLowerCase().includes(search_term.toLowerCase()) ||
