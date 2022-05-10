@@ -192,13 +192,13 @@ const get_stats = async (gecko_id: string): Promise<CoinStats | null> => {
             const last_hour_value = processed.find(elem => {
                 return (
                     DateTime.fromJSDate(elem.timestamp).diffNow('hours') >= Duration.fromDurationLike({ hours: -2 }) &&
-                    DateTime.fromJSDate(elem.timestamp).diffNow('days') < Duration.fromDurationLike({ hours: -1 })
+                    DateTime.fromJSDate(elem.timestamp).diffNow('hours') < Duration.fromDurationLike({ hours: -1 })
                 );
             });
             const last_24hour_value = processed.find(elem => {
                 return (
                     DateTime.fromJSDate(elem.timestamp).diffNow('hours') >= Duration.fromDurationLike({ hours: -25 }) &&
-                    DateTime.fromJSDate(elem.timestamp).diffNow('days') < Duration.fromDurationLike({ hours: -24 })
+                    DateTime.fromJSDate(elem.timestamp).diffNow('hours') < Duration.fromDurationLike({ hours: -24 })
                 );
             });
             const last_7day_value = processed.find(elem => {
