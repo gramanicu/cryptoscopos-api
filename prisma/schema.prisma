@@ -173,8 +173,7 @@ model TicketMessage {
   writtenBy User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   content   String
 
-  ticketId           String
-  ticketSubscriberId String
-  userId             String
+  ticketId String
+  userId   String
   @@map(name: "ticket_messages")
 }
