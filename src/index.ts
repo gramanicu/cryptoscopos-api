@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
@@ -6,6 +7,8 @@ import router from './routes';
 import updateTask from './jobs/update_data';
 import errorMiddleware from './middlewares/error.middleware';
 import config from './config/main';
+import AlertService from './services/alert.service';
+import { Alert } from '@prisma/client';
 
 dotenv.config();
 
