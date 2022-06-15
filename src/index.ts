@@ -7,15 +7,17 @@ import router from './routes';
 import updateTask from './jobs/update_data';
 import errorMiddleware from './middlewares/error.middleware';
 import config from './config/main';
+import alertsTask from './jobs/check_alerts';
 import AlertService from './services/alert.service';
-import { Alert } from '@prisma/client';
 
 dotenv.config();
 
 // TODO - should be run separately
 if (config.run_worker) {
     updateTask.start();
+    alertsTask.start();
 }
+AlertService.checkAlerts();
 
 if (!process.env.PORT) {
     process.exit(1);

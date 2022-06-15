@@ -97,8 +97,8 @@ model Transaction {
   updatedAt DateTime @updatedAt
 
   account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  amount    Float /// The cryptocurrency amount
-  value     Float /// The value in $USD
+  amount    Float /// The cryptocurrency amount (negative to sell)
+  value     Float /// The value in $USD/unit
   comment   String? /// Any specific information related to the transaction
   timestamp DateTime /// When was the transaction done
 
@@ -118,6 +118,7 @@ model Alert {
   trigger     String /// The condition that will trigger the alert
   name        String
   description String?
+  isActive    Boolean @default(true)
 
   userId        String
   notifications Notification[]

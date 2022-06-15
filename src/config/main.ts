@@ -1,6 +1,7 @@
 import { Duration } from 'luxon';
 import cronsConfig from './crons';
 import auth0Config from './auth0';
+import emailConfig from './email';
 import process from 'process';
 import * as dotenv from 'dotenv';
 
@@ -12,4 +13,5 @@ export default {
     auth0: auth0Config,
     redis_url: process.env.REDIS_URL,
     run_worker: !(process.env.RUN_WORKER === 'false'),
+    email: emailConfig,
 };

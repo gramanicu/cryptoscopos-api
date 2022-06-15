@@ -159,6 +159,48 @@ const store = async (gecko_id: string): Promise<Coin | null> => {
 };
 
 /**
+ * Search for data associated to a coin at a specific point in time
+ * @param gecko_id The id of the coin that data should be retrieved for
+ * @param time The time of the data we search for
+ * @returns The data (if it exists)
+ */
+const get_closest_data = async (gecko_id: string, time: DateTime): Promise<CoinData | null> => {
+    const interval = Duration.fromMillis(config.coindata_update_interval.toMillis() * 0.95);
+    const start_date: DateTime = time.minus(interval);
+    const end_date: DateTime = time.plus(interval);
+    const coinData = await prisma.coinData.findFirst({
+        where: {
+            coin: {
+                coingeckoId: gecko_id,
+            },
+            timestamp: {
+                gte: start_date.toISO(),
+                lte: end_date.toISO(),
+            },
+        },
+        orderBy: {
+            timestamp: 'asc',
+        },
+    });
+
+    return coinData;
+};
+
+const get_current_data = async (gecko_id: string): Promise<CoinData | null> => {
+    const coinData = await prisma.coinData.findFirst({
+        where: {
+            coin: {
+                coingeckoId: gecko_id,
+            },
+        },
+        orderBy: {
+            timestamp: 'desc',
+        },
+    });
+    return coinData;
+};
+
+/**
  * Get the data associated to a coin (it's value over time)
  * @param gecko_id The id of the coin that data should be retrieved for
  * @param start_date The "earliest" record we want to retrieve (first record if not specified)
@@ -426,6 +468,8 @@ const CoinService = {
     get_data,
     get_stats,
     search,
+    get_closest_data,
+    get_current_data,
 };
 
 export default CoinService;
