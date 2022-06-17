@@ -33,7 +33,7 @@ const user_stats = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userData = await prisma.user.findFirst({
             where: {
-                id: res.locals.auth0_id,
+                auth0_id: res.locals.auth0_id,
             },
             include: {
                 accounts: {
@@ -76,6 +76,8 @@ const user_stats = async (req: Request, res: Response, next: NextFunction) => {
             return res.send({
                 accountCount: userData.accounts.length,
                 alertCount: userData.alerts.length,
+                totalProfit,
+                totalValue,
             });
         }
         return res.sendStatus(404);
