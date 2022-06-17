@@ -19,10 +19,10 @@ model User {
   private_id String? /// Used by discord, etc..
   auth0_id   String? /// The id used to identify the user on auth0
 
-  accounts       Account[]
-  alerts         Alert[]
-  tickets        Ticket[]
-  ticketMessages TicketMessage[]
+  accounts Account[]
+  alerts   Alert[]
+  // tickets        Ticket[]
+  // ticketMessages TicketMessage[]
   @@map(name: "users")
 }
 
@@ -144,37 +144,37 @@ enum NotificationTypes {
   DISCORD
 }
 
-/// A ticket created by an user to report a problem/bug or ask a question to a STAFF member
-model Ticket {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// /// A ticket created by an user to report a problem/bug or ask a question to a STAFF member
+// model Ticket {
+//   id        String   @id @default(cuid())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
 
-  subject   String
-  type      TicketTypes
-  createdBy User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+//   subject   String
+//   type      TicketTypes
+//   createdBy User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  messages TicketMessage[]
-  userId   String
-  @@map(name: "tickets")
-}
+//   messages TicketMessage[]
+//   userId   String
+//   @@map(name: "tickets")
+// }
 
-enum TicketTypes {
-  BUG_REPORT
-  QUESTION
-}
+// enum TicketTypes {
+//   BUG_REPORT
+//   QUESTION
+// }
 
-/// A message sent during a ticket conversation
-model TicketMessage {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// /// A message sent during a ticket conversation
+// model TicketMessage {
+//   id        String   @id @default(cuid())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
 
-  part_of   Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  writtenBy User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  content   String
+//   part_of   Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+//   writtenBy User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+//   content   String
 
-  ticketId String
-  userId   String
-  @@map(name: "ticket_messages")
-}
+//   ticketId String
+//   userId   String
+//   @@map(name: "ticket_messages")
+// }

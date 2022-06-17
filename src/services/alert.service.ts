@@ -1,9 +1,37 @@
-import { Alert } from '@prisma/client';
+import { Alert, Prisma } from '@prisma/client';
 import { DateTime, Duration } from 'luxon';
 import auth0Manage from '../lib/auth0Manage';
 import { send_email } from '../lib/emailClient';
 import prisma from '../lib/prismaClient';
 import CoinService from './coins.service';
+
+const isValidAlertString = async (trigger: string): Promise<boolean> => {
+    const words = trigger.split(' ');
+
+    if (words.length < 4) {
+        return false;
+    }
+
+    const subject = words[0];
+    const condition = words[2];
+    const isPercent = words[3][words[3].length - 1] === '%' ? true : false;
+
+    if (isPercent && subject === 'coin_value' && words.length == 5) {
+        const period = parseInt(words[5]);
+
+        if (period > 0 && (condition === '+' || condition === '-')) {
+            return true;
+        }
+    } else if (
+        !isPercent &&
+        (subject === 'account_value' || subject === 'account_profit') &&
+        (condition === '>=' || condition === '<=')
+    ) {
+        return true;
+    }
+
+    return false;
+};
 
 /**
  * Check if an alert should be triggered
@@ -15,7 +43,6 @@ const isTriggered = async (alert: Alert): Promise<boolean> => {
     const words = trigger.split(' ');
 
     if (words.length < 4) {
-        console.log('Not enough words');
         return false;
     }
 
@@ -155,9 +182,88 @@ const checkAlerts = async () => {
     }
 };
 
+/**
+ * Create a new alert
+ * @param data The alert data
+ * @returns The created alert, if the operation succeeded
+ */
+const create_alert = async (data: Prisma.AlertCreateInput): Promise<Alert | null> => {
+    try {
+        const alert = await prisma.alert.create({
+            data: data,
+        });
+
+        return alert;
+    } catch (err) {
+        return null;
+    }
+};
+
+/**
+ * Delete an alert
+ * @param searchFor What alert to delete
+ * @returns The alert account
+ */
+const remove_alert = async (searchFor: Prisma.AlertDeleteArgs): Promise<Alert | null> => {
+    try {
+        const alert = await prisma.alert.delete(searchFor);
+        return alert;
+    } catch (err) {
+        return null;
+    }
+};
+
+/**
+ * Set the status of an alert to "not triggered"
+ * @param id The id of the alert to reset
+ */
+const reset_alert = async (id: string): Promise<Alert | null> => {
+    try {
+        const alert = await prisma.alert.update({
+            where: {
+                id: id,
+            },
+            data: {
+                isActive: true,
+            },
+        });
+        return alert;
+    } catch (err) {
+        return null;
+    }
+};
+
+const all_alerts = async (userId: string): Promise<Alert[]> => {
+    try {
+        const alerts = await prisma.alert.findMany({
+            where: {
+                userId: userId,
+            },
+        });
+        return alerts;
+    } catch {
+        return [];
+    }
+};
+
+const get_alert = async (searchFor: Prisma.AlertFindFirstArgs): Promise<Alert | null> => {
+    try {
+        const alert = await prisma.alert.findFirst(searchFor);
+        return alert;
+    } catch {
+        return null;
+    }
+};
+
 const AlertService = {
     isTriggered,
     checkAlerts,
+    isValidAlertString,
+    create_alert,
+    remove_alert,
+    reset_alert,
+    all_alerts,
+    get_alert,
 };
 
 export default AlertService;
