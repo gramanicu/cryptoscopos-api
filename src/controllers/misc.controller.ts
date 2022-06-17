@@ -87,6 +87,7 @@ const user_stats = async (req: Request, res: Response, next: NextFunction) => {
 
 const MiscController = {
     site_stats,
+    user_stats,
 };
 
 export default MiscController;
