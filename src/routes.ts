@@ -5,6 +5,7 @@ import AuthRouter from './routes/auth.route';
 import AccountsRouter from './routes/accounts.route';
 import PrivateAccountsRouter from './routes/privateAccounts.route';
 import AlertsRouter from './routes/alerts.route';
+import MiscRouter from './routes/misc.route';
 
 const router: Router = express.Router();
 
@@ -14,5 +15,6 @@ router.use('/coins', CoinsRouter);
 router.use('/private-accounts/', PrivateAccountsRouter);
 router.use('/accounts/', AccountsRouter);
 router.use('/alerts', AlertsRouter);
+router.use('/', MiscRouter);
 
 export default router;
