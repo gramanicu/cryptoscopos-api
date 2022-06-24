@@ -10,7 +10,7 @@ import checkJwt from './middlewares/auth0.middleware';
 
 const router: Router = express.Router();
 
-router.use('/auth', checkJwt, AuthRouter);
+router.use('/auth', AuthRouter);
 router.use('/private-user', checkJwt, PrivateUserRouter);
 router.use('/coins', CoinsRouter);
 router.use('/private-accounts/', checkJwt, PrivateAccountsRouter);
