@@ -157,6 +157,7 @@ const checkAlerts = async () => {
                                 if (alert.createdBy.auth0_id) {
                                     const userInfo = await auth0Manage.getUserInfo(alert.createdBy.auth0_id);
                                     const email = JSON.parse(userInfo).email;
+                                    console.log(userInfo);
 
                                     send_email({
                                         to: email,
@@ -168,16 +169,15 @@ const checkAlerts = async () => {
                             break;
                     }
                 }
+                await prisma.alert.update({
+                    where: {
+                        id: alert.id,
+                    },
+                    data: {
+                        isActive: false,
+                    },
+                });
             }
-
-            await prisma.alert.update({
-                where: {
-                    id: alert.id,
-                },
-                data: {
-                    isActive: false,
-                },
-            });
         }
     }
 };
